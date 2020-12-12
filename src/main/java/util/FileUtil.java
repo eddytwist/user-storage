@@ -15,12 +15,13 @@ import java.util.List;
 
 public class FileUtil {
     private static final Logger LOG = LoggerFactory.getLogger(FileUtil.class);
-    private static final String FILE_PATH = "user_storage.txt";
+    private static final String FILE_PATH = "./storage/user_storage.txt";
 
     static {
         File file = new File(FILE_PATH);
         if(!file.exists()){
             try {
+                file.getParentFile().mkdirs();
                 file.createNewFile();
                 LOG.info("New file created.");
                 updateFile(initializeFile());

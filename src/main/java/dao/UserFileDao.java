@@ -66,7 +66,7 @@ public class UserFileDao implements UserDao<User> {
         Set<Role> roles = new HashSet<>();
         int maxRolesSize = 3;
         while(roles.size() < maxRolesSize) {
-            showRoles();
+            Role.showRoles();
             String roleNumber = scanner.nextLine();
             Role role = null;
             switch (roleNumber) {
@@ -124,13 +124,6 @@ public class UserFileDao implements UserDao<User> {
         return roles;
     }
 
-    public void showRoles() {
-        System.out.println("\nRoles:");
-        for(Role role : Role.values()) {
-            System.out.println(role.ordinal() + 1 + ". " + role);
-        }
-        System.out.print("Choose the role by number (1-6): ");
-    }
 
     public Set<String> addPhoneNumbers() {
         Set<String> phoneNumbers = new HashSet<>();
