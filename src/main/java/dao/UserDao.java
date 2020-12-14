@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface UserDao<User> {
 
-    boolean createUser ();
+    boolean createUser (User user);
 
     User getUserById(int id);
 

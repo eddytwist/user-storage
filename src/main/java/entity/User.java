@@ -10,12 +10,21 @@ public class User implements Serializable {
 
     private static final long serialVersionUID = 5027143598751233241L;
     private static final AtomicInteger count = new AtomicInteger(0);
-    private int id;
+    private final int id;
     private String firstName;
     private String lastName;
     private String email;
     private Set<Role> roles;
     private Set<String> phoneNumbers;
+
+    public User(String firstName, String lastName, String email, Set<Role> roles, Set<String> phoneNumbers) {
+        this.id = count.incrementAndGet();
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.roles = roles;
+        this.phoneNumbers = phoneNumbers;
+    }
 
     public User(String firstName, String lastName) {
         this.id = count.incrementAndGet();
@@ -26,16 +35,8 @@ public class User implements Serializable {
         this.phoneNumbers = new HashSet<>();
     }
 
-    public User() {
-        this.id = count.incrementAndGet();
-    }
-
     public int getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getFirstName() {
