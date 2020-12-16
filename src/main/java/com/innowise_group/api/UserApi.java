@@ -97,13 +97,11 @@ public class UserApi {
         User user;
         try {
             user = crudService.getUserById(id);
-            if (user != null) {
-                System.out.println("\nUser id '" + id + "' information: \n" + user);
-                LOG.info("User info printed.");
-            }
+            System.out.println(user.getUserFields());
+            LOG.info("User info printed.");
         } catch (UserNotFoundException | NullPointerException e) {
             System.out.println("\nUser not found. Please, try again.");
-            LOG.error("User wasn't found.");
+            LOG.error("User wasn't found. Details: " + e);
         }
     }
 
@@ -130,7 +128,7 @@ public class UserApi {
             LOG.info("User deleted.");
         } catch (UserNotFoundException | NullPointerException e) {
             System.out.println("\nUser not found. Please, try again.");
-            LOG.error("User deletion failed.");
+            LOG.error("User deletion failed. Details: " + e);
         }
     }
 
@@ -146,16 +144,8 @@ public class UserApi {
             }
         } catch (UserNotFoundException | NullPointerException e) {
             System.out.println("\nUser not found. Please, try again.");
-            LOG.error("User update failed.");
+            LOG.error("User update failed. Details: " + e);
         }
-    }
-
-    public void showRoles() {
-        System.out.println("\nRoles:");
-        for (Role role : Role.values()) {
-            System.out.println(role.ordinal() + 1 + ". " + role);
-        }
-        System.out.print("Choose the role by number (1-6): ");
     }
 
     public int userIdInput() {
@@ -213,6 +203,14 @@ public class UserApi {
         }
         LOG.info("Roles added to User. Details: " + roles);
         return roles;
+    }
+
+    public void showRoles() {
+        System.out.println("\nRoles:");
+        for (Role role : Role.values()) {
+            System.out.println(role.ordinal() + 1 + ". " + role);
+        }
+        System.out.print("Choose the role by number (1-6): ");
     }
 
     public Role chooseRole(String roleNumber, Set<Role> roles){
@@ -319,8 +317,8 @@ public class UserApi {
         User userCopy = new User(user);
         boolean finished = false;
         while (!finished) {
-            System.out.print("\nChose the field you want to update by number (1-5):" + userCopy.getUserFields());
-            System.out.println("\n6. Finish update.");
+            System.out.print("\nChose the field you want to update by number (1-5)." + userCopy.getUserFields()
+                    + "\n6. Finish update.\nEnter the number: ");
             String fieldNumber = scanner.nextLine();
             switch (fieldNumber) {
                 case "1":
