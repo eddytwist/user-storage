@@ -1,4 +1,4 @@
-package entity;
+package com.innowise_group.entity;
 
 public enum Role {
     BACKEND,

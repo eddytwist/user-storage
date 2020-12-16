@@ -1,4 +1,4 @@
-package util.validation;
+package com.innowise_group.util.validation;
 
 import java.util.regex.Pattern;
 

@@ -1,12 +1,12 @@
-package api;
+package com.innowise_group.api;
 
-import entity.Role;
-import entity.User;
+import com.innowise_group.entity.Role;
+import com.innowise_group.entity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import service.impl.UserServiceImpl;
-import util.validation.EmailValidation;
-import util.validation.PhoneNumberValidation;
+import com.innowise_group.service.UserService;
+import com.innowise_group.util.validation.EmailValidation;
+import com.innowise_group.util.validation.PhoneNumberValidation;
 
 import java.util.HashSet;
 import java.util.List;
@@ -15,9 +15,13 @@ import java.util.Set;
 
 public class UserApi {
     private static final Logger LOG = LoggerFactory.getLogger(UserApi.class);
-    public static Scanner scanner = new Scanner(System.in);
-    public static UserServiceImpl userService = new UserServiceImpl();
-    private static boolean finished = false;
+    private final UserService<User> userService;
+    private boolean finished = false;
+    public Scanner scanner = new Scanner(System.in);
+
+    public UserApi(UserService<User> userService) {
+        this.userService = userService;
+    }
 
     public void start() {
         LOG.info("THE PROGRAM IS RUNNING.\n");
@@ -28,13 +32,14 @@ public class UserApi {
 
     public void exit() {
         finished = true;
+        System.out.println("Good bye!");
         LOG.info("THE PROGRAM SUCCESSFULLY FINISHED.\n");
     }
 
     public void showMainMenu() {
         System.out.println("\nUser Storage Application");
         System.out.println("-------------------------");
-        System.out.println("Application menu:");
+        System.out.println("Main menu:");
         System.out.println("1. Create new user");
         System.out.println("2. Update existing user");
         System.out.println("3. Get user information");
@@ -64,6 +69,7 @@ public class UserApi {
                 showUserStorage();
                 break;
             case "5":
+                System.out.println("What User info you want to delete?");
                 showUserDeleted(userIdInput());
                 break;
             case "6":
@@ -105,9 +111,9 @@ public class UserApi {
 
     public void showUserDeleted(int id) {
         if (userService.deleteUser(id)) {
-            System.out.println("User successfully deleted.");
+            System.out.println("\nUser successfully deleted.");
         } else {
-            System.out.println("User deletion failed.");
+            System.out.println("\nUser deletion failed.");
             LOG.error("User deletion failed.");
         }
     }
@@ -171,12 +177,10 @@ public class UserApi {
                     break;
                 default:
                     if (roles.size() == 0) {
-                        System.out.println("\nWrong role number. You should add at least ONE role." +
-                                "\nPlease, try again.");
+                        System.out.println("\nWrong role number. You should add at least ONE role.\nPlease, try again.");
                     } else {
                         System.out.println("\nWrong role number. User roles: " + roles + " " +
-                                roles.size() + "/" + maxRolesSize +
-                                "\nPlease, try again.");
+                                roles.size() + "/" + maxRolesSize + "\nPlease, try again.");
                     }
             }
             if (role != null) {
@@ -193,7 +197,9 @@ public class UserApi {
                     String answer = scanner.nextLine().toUpperCase();
                     if (answer.equals("YES")) {
                         System.out.println("You can chose another role.");
-                    } else break;
+                    } else {
+                        break;
+                    }
                 } else {
                     System.out.println("\nYou've added the maximum quantity of roles." +
                             "\nUser roles: " + roles + " " + roles.size() + "/" + maxRolesSize);
@@ -213,12 +219,10 @@ public class UserApi {
             String phoneNumber = scanner.nextLine();
             if (!PhoneNumberValidation.validatePhoneNumber(phoneNumber)) {
                 if (phoneNumbers.size() == 0) {
-                    System.out.println("\nInvalid phone number. You should add at least ONE phone number." +
-                            "\nPlease, try again.");
+                    System.out.println("\nInvalid phone number. You should add at least ONE phone number.\nPlease, try again.");
                 } else {
                     System.out.println("\nInvalid phone number. User phone numbers: " + phoneNumbers + " " +
-                            phoneNumbers.size() + "/" + maxPhoneNumbersSize +
-                            "\nPlease, try again.");
+                            phoneNumbers.size() + "/" + maxPhoneNumbersSize + "\nPlease, try again.");
                 }
             } else {
                 if (!phoneNumbers.add(phoneNumber)) {
@@ -247,17 +251,15 @@ public class UserApi {
     }
 
     public String addFirstName() {
-        String firstName;
         System.out.print("Enter user name: ");
-        firstName = scanner.nextLine();
+        String firstName = scanner.nextLine();
         LOG.info("First name added to User. Details: " + firstName);
         return firstName;
     }
 
     public String addLastName() {
-        String lastName;
         System.out.print("Enter user surname: ");
-        lastName = scanner.nextLine();
+        String lastName = scanner.nextLine();
         LOG.info("Last name added to User. Details: " + lastName);
         return lastName;
     }
@@ -278,26 +280,27 @@ public class UserApi {
     }
 
     public User updateUserFields(User user) {
+        User userCopy = new User(user);
         boolean finished = false;
         while (!finished) {
-            System.out.print("\nChose the field you want to update by number (1-5):" + user.getUserFields());
+            System.out.print("\nChose the field you want to update by number (1-5):" + userCopy.getUserFields());
             System.out.println("\n6. Finish update.");
             String fieldNumber = scanner.nextLine();
             switch (fieldNumber) {
                 case "1":
-                    user.setFirstName(addFirstName());
+                    userCopy.setFirstName(addFirstName());
                     break;
                 case "2":
-                    user.setLastName(addLastName());
+                    userCopy.setLastName(addLastName());
                     break;
                 case "3":
-                    user.setEmail(addEmail());
+                    userCopy.setEmail(addEmail());
                     break;
                 case "4":
-                    user.setRoles(addRoles());
+                    userCopy.setRoles(addRoles());
                     break;
                 case "5":
-                    user.setPhoneNumbers(addPhoneNumbers());
+                    userCopy.setPhoneNumbers(addPhoneNumbers());
                     break;
                 case "6":
                     finished = true;
@@ -306,7 +309,8 @@ public class UserApi {
                     System.out.println("\nWrong number. Please, try again.");
             }
         }
-        LOG.info("User successfully updated. Details: " + user);
-        return user;
+        LOG.info("User successfully updated. Details: " + userCopy);
+        return userCopy;
     }
+
 }

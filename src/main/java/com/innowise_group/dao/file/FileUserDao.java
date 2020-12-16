@@ -1,10 +1,10 @@
-package dao.file;
+package com.innowise_group.dao.file;
 
-import dao.UserDao;
-import entity.User;
+import com.innowise_group.dao.UserDao;
+import com.innowise_group.entity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import util.FileUtil;
+import com.innowise_group.util.FileUtil;
 
 import java.util.List;
 
@@ -14,6 +14,7 @@ public class FileUserDao implements UserDao<User> {
     @Override
     public boolean createUser (User user) {
         List<User> users =  FileUtil.readFile();
+        user.setId(getLastId() + 1);
         users.add(user);
         LOG.info("User successfully created. Details: \n" + user);
         return FileUtil.updateFile(users);
@@ -28,7 +29,7 @@ public class FileUserDao implements UserDao<User> {
                 user = u;
             }
         }
-        LOG.info("User successfully found.");
+        LOG.info("User successfully found. Details: " + user);
         return user;
     }
 
@@ -53,9 +54,17 @@ public class FileUserDao implements UserDao<User> {
     public boolean deleteUser(int id) {
         List<User> users = FileUtil.readFile();
         User user = getUserById(id);
+        if(user == null) {
+            return false;
+        }
         users.remove(user);
         LOG.info("User successfully deleted. Details: " + users);
         return FileUtil.updateFile(users);
+    }
+
+    public int getLastId() {
+        List<User> users = FileUtil.readFile();
+        return users.get(users.size() - 1).getId();
     }
 
 

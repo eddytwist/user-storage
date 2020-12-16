@@ -1,4 +1,4 @@
-package dao;
+package com.innowise_group.dao;
 
 import java.util.List;
 

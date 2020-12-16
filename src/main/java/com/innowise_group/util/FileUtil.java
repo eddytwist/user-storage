@@ -1,6 +1,6 @@
-package util;
+package com.innowise_group.util;
 
-import entity.User;
+import com.innowise_group.entity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.io.File;
@@ -15,7 +15,7 @@ import java.util.List;
 
 public class FileUtil {
     private static final Logger LOG = LoggerFactory.getLogger(FileUtil.class);
-    private static final String FILE_PATH = "./storage/user_storage.txt";
+    private static final String FILE_PATH = "test/test_storage/test_user_storage.txt";
 
     static {
         File file = new File(FILE_PATH);
@@ -26,10 +26,11 @@ public class FileUtil {
                 LOG.info("New file created.");
                 updateFile(initializeFile());
             } catch (IOException e) {
+                LOG.info("Fail wasn't created. Details: " + e);
                 e.printStackTrace();
             }
         } else {
-            LOG.info("File already exist.");
+            LOG.info("File already exists.");
         }
     }
 

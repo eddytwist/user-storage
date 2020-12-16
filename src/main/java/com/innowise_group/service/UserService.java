@@ -1,4 +1,4 @@
-package service;
+package com.innowise_group.service;
 
 import java.util.List;
 
@@ -13,5 +13,7 @@ public interface UserService<User> {
     boolean updateUser(User user);
 
     boolean deleteUser(int id);
+
+    int getLastUserId();
 }
 

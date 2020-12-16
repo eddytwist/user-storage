@@ -1,38 +1,42 @@
-package service.impl;
+package com.innowise_group.service.impl;
 
-import dao.file.FileUserDao;
-import entity.User;
-import service.UserService;
+import com.innowise_group.dao.UserDao;
+import com.innowise_group.entity.User;
+import com.innowise_group.service.UserService;
 
 import java.util.List;
 
 
 public class UserServiceImpl implements UserService<User> {
-    public static FileUserDao fileUserDao = new FileUserDao();
+    public UserDao userDao;
+
+    public UserServiceImpl(UserDao userDao) {
+        this.userDao = userDao;
+    }
 
     @Override
     public boolean createUser(User user) {
-        return fileUserDao.createUser(user);
+        return userDao.createUser(user);
     }
 
     @Override
     public User getUserById(int id) {
-        return fileUserDao.getUserById(id);
+        return (User) userDao.getUserById(id);
     }
 
     @Override
     public List<User> getAllUsers() {
-        return fileUserDao.getAllUsers();
+        return userDao.getAllUsers();
     }
 
     @Override
     public boolean deleteUser(int id) {
-        return fileUserDao.deleteUser(id);
+        return userDao.deleteUser(id);
     }
 
     @Override
     public boolean updateUser(User user) {
-        return fileUserDao.updateUser(user);
+        return userDao.updateUser(user);
     }
 
     public int getLastUserId() {
