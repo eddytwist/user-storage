@@ -3,7 +3,7 @@ package com.innowise_group.api;
 import com.innowise_group.dao.exception.UserNotFoundException;
 import com.innowise_group.entity.Role;
 import com.innowise_group.entity.User;
-import com.innowise_group.service.UserService;
+import com.innowise_group.service.CrudService;
 import com.innowise_group.util.validation.EmailValidation;
 import com.innowise_group.util.validation.PhoneNumberValidation;
 import org.slf4j.Logger;
@@ -16,12 +16,13 @@ import java.util.Set;
 
 public class UserApi {
     private static final Logger LOG = LoggerFactory.getLogger(UserApi.class);
-    private final UserService<User> userService;
-    public Scanner scanner = new Scanner(System.in);
+    private final CrudService<User> crudService;
+    private final Scanner scanner;
     private boolean finished = false;
 
-    public UserApi(UserService<User> userService) {
-        this.userService = userService;
+    public UserApi(CrudService<User> crudService) {
+        this.crudService = crudService;
+        this.scanner = new Scanner(System.in);
     }
 
     public void start() {
@@ -84,7 +85,7 @@ public class UserApi {
     }
 
     public void showUserStorage() {
-        List<User> users = userService.getAllUsers();
+        List<User> users = crudService.getAllUsers();
         System.out.println("\nUsers storage:");
         for (User user : users) {
             System.out.println(user);
@@ -95,7 +96,7 @@ public class UserApi {
     public void showUserInfo(int id) {
         User user;
         try {
-            user = userService.getUserById(id);
+            user = crudService.getUserById(id);
             if (user != null) {
                 System.out.println("\nUser id '" + id + "' information: \n" + user);
                 LOG.info("User info printed.");
@@ -113,7 +114,7 @@ public class UserApi {
                 addEmail(),
                 addRoles(),
                 addPhoneNumbers());
-        if (userService.createUser(user)) {
+        if (crudService.createUser(user)) {
             System.out.println("User successfully added.");
             LOG.info("User created.");
         } else {
@@ -124,7 +125,7 @@ public class UserApi {
 
     public void showUserDeleted(int id) {
         try {
-            userService.deleteUser(id);
+            crudService.deleteUser(id);
             System.out.println("\nUser successfully deleted.");
             LOG.info("User deleted.");
         } catch (UserNotFoundException | NullPointerException e) {
@@ -136,8 +137,8 @@ public class UserApi {
     public void showUserUpdated(int id) {
         User updatedUser;
         try {
-            updatedUser = updateUserFields(userService.getUserById(id));
-            if (userService.updateUser(updatedUser)) {
+            updatedUser = updateUserFields(crudService.getUserById(id));
+            if (crudService.updateUser(updatedUser)) {
                 System.out.println("User successfully updated.");
                 LOG.info("User updated.");
             } else {

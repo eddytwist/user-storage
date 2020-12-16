@@ -1,10 +1,10 @@
-package com.innowise_group.dao;
+package com.innowise_group.service;
 
 import com.innowise_group.dao.exception.UserNotFoundException;
 
 import java.util.List;
 
-public interface UserDao<T> {
+public interface CrudService<T> {
 
     boolean createUser(T t);
 
@@ -15,4 +15,6 @@ public interface UserDao<T> {
     boolean updateUser(T t);
 
     boolean deleteUser(int id) throws UserNotFoundException;
+
 }
+

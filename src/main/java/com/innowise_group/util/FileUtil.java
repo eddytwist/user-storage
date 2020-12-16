@@ -15,7 +15,7 @@ import java.util.List;
 
 public class FileUtil {
     private static final Logger LOG = LoggerFactory.getLogger(FileUtil.class);
-    private static final String FILE_PATH = "test/test_storage/test_user_storage.txt";
+    private static final String FILE_PATH = "storage/user_storage.txt";
 
     static {
         File file = new File(FILE_PATH);

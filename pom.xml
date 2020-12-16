@@ -10,7 +10,7 @@
     <properties>
         <slf4j.version>1.7.30</slf4j.version>
         <log4j.version>2.13.3</log4j.version>
-        <junit.version>1.7.0-RC1</junit.version>
+        <junit.version>4.13</junit.version>
     </properties>
 
     <dependencies>
@@ -30,8 +30,8 @@
             <version>${log4j.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.junit.platform</groupId>
-            <artifactId>junit-platform-runner</artifactId>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
