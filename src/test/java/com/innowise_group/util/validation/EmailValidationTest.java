@@ -20,6 +20,9 @@ public class EmailValidationTest {
       invalidEmails.add("any.mail.com");
       invalidEmails.add("any#mail.com");
       invalidEmails.add("@mail.me.org");
+      invalidEmails.add("any@.org");
+      invalidEmails.add("@.org");
+      invalidEmails.add("@");
    }
 
    @Test
@@ -35,10 +38,10 @@ public class EmailValidationTest {
 
    @Test
    public void testValidateInvalidEmails() {
-      boolean valid = true;
+      boolean valid = false;
       for (String email : invalidEmails) {
-         if(!EmailValidation.validateEmail(email)) {
-            valid = false;
+         if(EmailValidation.validateEmail(email)) {
+            valid = true;
          }
       }
       Assert.assertFalse(valid);

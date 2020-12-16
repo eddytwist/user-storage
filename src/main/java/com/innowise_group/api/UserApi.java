@@ -1,12 +1,13 @@
 package com.innowise_group.api;
 
+import com.innowise_group.dao.exceptions.UserNotFoundException;
 import com.innowise_group.entity.Role;
 import com.innowise_group.entity.User;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import com.innowise_group.service.UserService;
 import com.innowise_group.util.validation.EmailValidation;
 import com.innowise_group.util.validation.PhoneNumberValidation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashSet;
 import java.util.List;
@@ -69,6 +70,7 @@ public class UserApi {
                 showUserStorage();
                 break;
             case "5":
+                showUserStorage();
                 System.out.println("What User info you want to delete?");
                 showUserDeleted(userIdInput());
                 break;
@@ -89,9 +91,16 @@ public class UserApi {
     }
 
     public void showUserInfo(int id) {
-        User user = userService.getUserById(id);
-        System.out.println("\nUser id '" + id + "' information: ");
-        System.out.println(user);
+        User user = null;
+        try {
+            user = userService.getUserById(id);
+        } catch (UserNotFoundException | NullPointerException e) {
+            System.out.println("\nUser not found. Please, try again.");
+            showMainMenu();
+        }
+        if (user != null) {
+            System.out.println("\nUser id '" + id + "' information: \n" + user);
+        }
     }
 
     public void showUserCreated() {
@@ -110,16 +119,26 @@ public class UserApi {
     }
 
     public void showUserDeleted(int id) {
-        if (userService.deleteUser(id)) {
-            System.out.println("\nUser successfully deleted.");
-        } else {
-            System.out.println("\nUser deletion failed.");
-            LOG.error("User deletion failed.");
+        try {
+            if (userService.deleteUser(id)) {
+                System.out.println("\nUser successfully deleted.");
+            } else {
+                System.out.println("\nUser deletion failed.");
+                LOG.error("User deletion failed.");
+            }
+        } catch (UserNotFoundException | NullPointerException e) {
+            System.out.println("\nUser not found. Please, try again.");
+            showMainMenu();
         }
     }
 
     public void showUserUpdated(int id) {
-        User updatedUser = updateUserFields(userService.getUserById(id));
+        User updatedUser = null;
+        try {
+            updatedUser = updateUserFields(userService.getUserById(id));
+        } catch (UserNotFoundException | NullPointerException e) {
+            System.out.println("\nUser not found. Please, try again.");
+        }
         if (userService.updateUser(updatedUser)) {
             System.out.println("User successfully updated.");
         } else {
@@ -136,7 +155,7 @@ public class UserApi {
             stringId = scanner.nextLine();
             try {
                 userId = Integer.parseInt(stringId);
-                if (userId > userService.getLastUserId() || userId < 1) {
+                if (userId < 1) {
                     System.out.println("\nUser doesn't exist! Please, try again.");
                 } else {
                     LOG.info("User exists.");

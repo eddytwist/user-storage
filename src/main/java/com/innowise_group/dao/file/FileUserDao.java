@@ -1,6 +1,7 @@
 package com.innowise_group.dao.file;
 
 import com.innowise_group.dao.UserDao;
+import com.innowise_group.dao.exceptions.UserNotFoundException;
 import com.innowise_group.entity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,12 +22,14 @@ public class FileUserDao implements UserDao<User> {
     }
 
     @Override
-    public User getUserById(int id) {
+    public User getUserById(int id) throws UserNotFoundException {
         List<User> users = FileUtil.readFile();
         User user = null;
-        for (User u: users) {
-            if(u.getId() == id) {
+        for (User u : users) {
+            if (u.getId() == id) {
                 user = u;
+            } else {
+                throw new UserNotFoundException();
             }
         }
         LOG.info("User successfully found. Details: " + user);
@@ -51,9 +54,10 @@ public class FileUserDao implements UserDao<User> {
     }
 
     @Override
-    public boolean deleteUser(int id) {
+    public boolean deleteUser(int id) throws UserNotFoundException {
         List<User> users = FileUtil.readFile();
-        User user = getUserById(id);
+        User user = null;
+        user = getUserById(id);
         if(user == null) {
             return false;
         }

@@ -1,6 +1,7 @@
 package com.innowise_group.service.impl;
 
 import com.innowise_group.dao.UserDao;
+import com.innowise_group.dao.exceptions.UserNotFoundException;
 import com.innowise_group.entity.User;
 import com.innowise_group.service.UserService;
 
@@ -8,9 +9,9 @@ import java.util.List;
 
 
 public class UserServiceImpl implements UserService<User> {
-    public UserDao userDao;
+    public UserDao<User> userDao;
 
-    public UserServiceImpl(UserDao userDao) {
+    public UserServiceImpl(UserDao<User> userDao) {
         this.userDao = userDao;
     }
 
@@ -20,8 +21,8 @@ public class UserServiceImpl implements UserService<User> {
     }
 
     @Override
-    public User getUserById(int id) {
-        return (User) userDao.getUserById(id);
+    public User getUserById(int id) throws UserNotFoundException {
+        return userDao.getUserById(id);
     }
 
     @Override
@@ -30,7 +31,7 @@ public class UserServiceImpl implements UserService<User> {
     }
 
     @Override
-    public boolean deleteUser(int id) {
+    public boolean deleteUser(int id) throws UserNotFoundException {
         return userDao.deleteUser(id);
     }
 
