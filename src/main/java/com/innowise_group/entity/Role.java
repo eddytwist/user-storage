@@ -6,13 +6,5 @@ public enum Role {
     DESIGNER,
     TESTER,
     MANAGER,
-    ANALYST;
-
-    public static void showRoles() {
-        System.out.println("\nRoles:");
-        for(Role role : Role.values()) {
-            System.out.println(role.ordinal() + 1 + ". " + role);
-        }
-        System.out.print("Choose the role by number (1-6): ");
-    }
+    ANALYST,
 }

@@ -3,9 +3,9 @@ package com.innowise_group.util;
 import com.innowise_group.entity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -19,44 +19,38 @@ public class FileUtil {
 
     static {
         File file = new File(FILE_PATH);
-        if(!file.exists()){
+        if (!file.exists()) {
             try {
                 file.getParentFile().mkdirs();
                 file.createNewFile();
                 LOG.info("New file created.");
                 updateFile(initializeFile());
             } catch (IOException e) {
-                LOG.info("Fail wasn't created. Details: " + e);
-                e.printStackTrace();
+                LOG.error("File wasn't created. Details: " + e);
             }
         } else {
             LOG.info("File already exists.");
         }
     }
 
-
-    public static List <User> readFile() {
+    public static List<User> readFile() {
         List<User> users = null;
-        try (ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream (FILE_PATH))) {
+        try (ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(FILE_PATH))) {
             users = (List<User>) objectInputStream.readObject();
             LOG.info("Users list successfully found. Details: \n" + users);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (ClassNotFoundException | IOException e) {
+            LOG.error("File wasn't read. Details: " + e);
         }
         return users;
     }
 
     public static boolean updateFile(List<User> users) {
-        try (ObjectOutputStream objectOutputStream = new ObjectOutputStream (new FileOutputStream (FILE_PATH))) {
+        try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(FILE_PATH))) {
             objectOutputStream.writeObject(users);
             LOG.info("Users list successfully updated. Details: \n" + users);
             return true;
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.error("File wasn't updated. Details: " + e);
             return false;
         }
     }

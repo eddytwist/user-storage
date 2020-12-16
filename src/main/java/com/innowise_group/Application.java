@@ -7,7 +7,6 @@ import com.innowise_group.entity.User;
 import com.innowise_group.service.UserService;
 import com.innowise_group.service.impl.UserServiceImpl;
 
-
 public class Application {
 
     public static void main(String[] args) {

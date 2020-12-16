@@ -1,12 +1,11 @@
 package com.innowise_group.service.impl;
 
 import com.innowise_group.dao.UserDao;
-import com.innowise_group.dao.exceptions.UserNotFoundException;
+import com.innowise_group.dao.exception.UserNotFoundException;
 import com.innowise_group.entity.User;
 import com.innowise_group.service.UserService;
 
 import java.util.List;
-
 
 public class UserServiceImpl implements UserService<User> {
     public UserDao<User> userDao;
@@ -40,8 +39,4 @@ public class UserServiceImpl implements UserService<User> {
         return userDao.updateUser(user);
     }
 
-    public int getLastUserId() {
-        List<User> users = getAllUsers();
-        return users.get(users.size() - 1).getId();
-    }
 }

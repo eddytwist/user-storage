@@ -1,4 +1,4 @@
-package com.innowise_group.dao.exceptions;
+package com.innowise_group.dao.exception;
 
 public class UserNotFoundException extends Exception {
     public UserNotFoundException() {

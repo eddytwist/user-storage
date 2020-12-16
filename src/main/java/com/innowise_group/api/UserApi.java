@@ -1,6 +1,6 @@
 package com.innowise_group.api;
 
-import com.innowise_group.dao.exceptions.UserNotFoundException;
+import com.innowise_group.dao.exception.UserNotFoundException;
 import com.innowise_group.entity.Role;
 import com.innowise_group.entity.User;
 import com.innowise_group.service.UserService;
@@ -17,8 +17,8 @@ import java.util.Set;
 public class UserApi {
     private static final Logger LOG = LoggerFactory.getLogger(UserApi.class);
     private final UserService<User> userService;
-    private boolean finished = false;
     public Scanner scanner = new Scanner(System.in);
+    private boolean finished = false;
 
     public UserApi(UserService<User> userService) {
         this.userService = userService;
@@ -33,7 +33,7 @@ public class UserApi {
 
     public void exit() {
         finished = true;
-        System.out.println("Good bye!");
+        System.out.println("\nGood bye!");
         LOG.info("THE PROGRAM SUCCESSFULLY FINISHED.\n");
     }
 
@@ -63,7 +63,8 @@ public class UserApi {
                 showUserUpdated(userIdInput());
                 break;
             case "3":
-                System.out.println("What User info you want to print?");
+                showUserStorage();
+                System.out.println("\nWhat User info you want to print?");
                 showUserInfo(userIdInput());
                 break;
             case "4":
@@ -71,7 +72,7 @@ public class UserApi {
                 break;
             case "5":
                 showUserStorage();
-                System.out.println("What User info you want to delete?");
+                System.out.println("\nWhat User info you want to delete?");
                 showUserDeleted(userIdInput());
                 break;
             case "6":
@@ -88,18 +89,20 @@ public class UserApi {
         for (User user : users) {
             System.out.println(user);
         }
+        LOG.info("Users printed.");
     }
 
     public void showUserInfo(int id) {
-        User user = null;
+        User user;
         try {
             user = userService.getUserById(id);
+            if (user != null) {
+                System.out.println("\nUser id '" + id + "' information: \n" + user);
+                LOG.info("User info printed.");
+            }
         } catch (UserNotFoundException | NullPointerException e) {
             System.out.println("\nUser not found. Please, try again.");
-            showMainMenu();
-        }
-        if (user != null) {
-            System.out.println("\nUser id '" + id + "' information: \n" + user);
+            LOG.error("User wasn't found.");
         }
     }
 
@@ -112,6 +115,7 @@ public class UserApi {
                 addPhoneNumbers());
         if (userService.createUser(user)) {
             System.out.println("User successfully added.");
+            LOG.info("User created.");
         } else {
             System.out.println("User creation failed.");
             LOG.error("User creation failed.");
@@ -120,31 +124,37 @@ public class UserApi {
 
     public void showUserDeleted(int id) {
         try {
-            if (userService.deleteUser(id)) {
-                System.out.println("\nUser successfully deleted.");
-            } else {
-                System.out.println("\nUser deletion failed.");
-                LOG.error("User deletion failed.");
-            }
+            userService.deleteUser(id);
+            System.out.println("\nUser successfully deleted.");
+            LOG.info("User deleted.");
         } catch (UserNotFoundException | NullPointerException e) {
             System.out.println("\nUser not found. Please, try again.");
-            showMainMenu();
+            LOG.error("User deletion failed.");
         }
     }
 
     public void showUserUpdated(int id) {
-        User updatedUser = null;
+        User updatedUser;
         try {
             updatedUser = updateUserFields(userService.getUserById(id));
+            if (userService.updateUser(updatedUser)) {
+                System.out.println("User successfully updated.");
+                LOG.info("User updated.");
+            } else {
+                System.out.println("User update failed.");
+            }
         } catch (UserNotFoundException | NullPointerException e) {
             System.out.println("\nUser not found. Please, try again.");
-        }
-        if (userService.updateUser(updatedUser)) {
-            System.out.println("User successfully updated.");
-        } else {
-            System.out.println("User update failed.");
             LOG.error("User update failed.");
         }
+    }
+
+    public void showRoles() {
+        System.out.println("\nRoles:");
+        for (Role role : Role.values()) {
+            System.out.println(role.ordinal() + 1 + ". " + role);
+        }
+        System.out.print("Choose the role by number (1-6): ");
     }
 
     public int userIdInput() {
@@ -163,6 +173,7 @@ public class UserApi {
                 }
             } catch (NumberFormatException e) {
                 System.out.println("\nYou've entered wrong id. Please, try again.");
+                LOG.error("Invalid User ID input.");
             }
         }
         return userId;
@@ -172,36 +183,9 @@ public class UserApi {
         Set<Role> roles = new HashSet<>();
         int maxRolesSize = 3;
         while (roles.size() < maxRolesSize) {
-            Role.showRoles();
+            showRoles();
             String roleNumber = scanner.nextLine();
-            Role role = null;
-            switch (roleNumber) {
-                case "1":
-                    role = Role.BACKEND;
-                    break;
-                case "2":
-                    role = Role.FRONTEND;
-                    break;
-                case "3":
-                    role = Role.DESIGNER;
-                    break;
-                case "4":
-                    role = Role.TESTER;
-                    break;
-                case "5":
-                    role = Role.MANAGER;
-                    break;
-                case "6":
-                    role = Role.ANALYST;
-                    break;
-                default:
-                    if (roles.size() == 0) {
-                        System.out.println("\nWrong role number. You should add at least ONE role.\nPlease, try again.");
-                    } else {
-                        System.out.println("\nWrong role number. User roles: " + roles + " " +
-                                roles.size() + "/" + maxRolesSize + "\nPlease, try again.");
-                    }
-            }
+            Role role = chooseRole(roleNumber, roles);
             if (role != null) {
                 if (!roles.add(role)) {
                     System.out.println("Role '" + role + "' already exist.");
@@ -228,6 +212,38 @@ public class UserApi {
         }
         LOG.info("Roles added to User. Details: " + roles);
         return roles;
+    }
+
+    public Role chooseRole(String roleNumber, Set<Role> roles){
+        int maxRolesSize = 3;
+        Role role = null;
+        switch (roleNumber) {
+            case "1":
+                role = Role.BACKEND;
+                break;
+            case "2":
+                role = Role.FRONTEND;
+                break;
+            case "3":
+                role = Role.DESIGNER;
+                break;
+            case "4":
+                role = Role.TESTER;
+                break;
+            case "5":
+                role = Role.MANAGER;
+                break;
+            case "6":
+                role = Role.ANALYST;
+                break;
+            default:
+                if (roles.size() == 0) {
+                    System.out.println("\nWrong role number. You should add at least ONE role.\nPlease, try again.");
+                } else {
+                    System.out.println("\nWrong role number. User roles: " + roles + " " + roles.size() + "/" + maxRolesSize + "\nPlease, try again.");
+                }
+        }
+        return role;
     }
 
     public Set<String> addPhoneNumbers() {
