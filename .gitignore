@@ -1,6 +1,7 @@
 target/
 logs/
+storage/
 .idea/
 *.iml
 **/.DS_Store
-user_storage.txt
+

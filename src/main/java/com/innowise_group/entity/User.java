@@ -1,4 +1,4 @@
-package entity;
+package com.innowise_group.entity;
 
 import java.io.Serializable;
 import java.util.HashSet;
@@ -17,6 +17,14 @@ public class User implements Serializable {
     private Set<Role> roles;
     private Set<String> phoneNumbers;
 
+    public User(String firstName, String lastName, String email, Set<Role> roles, Set<String> phoneNumbers) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.roles = roles;
+        this.phoneNumbers = phoneNumbers;
+    }
+
     public User(String firstName, String lastName) {
         this.id = count.incrementAndGet();
         this.firstName = firstName;
@@ -26,8 +34,15 @@ public class User implements Serializable {
         this.phoneNumbers = new HashSet<>();
     }
 
-    public User() {
-        this.id = count.incrementAndGet();
+    public User clone() {
+        User userClone = new User(
+                this.firstName,
+                this.lastName,
+                this.email,
+                this.roles,
+                this.phoneNumbers);
+        userClone.setId(this.id);
+        return userClone;
     }
 
     public int getId() {
