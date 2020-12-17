@@ -16,7 +16,7 @@ import java.util.List;
 public class FileDb {
     private static final Logger LOG = LoggerFactory.getLogger(FileDb.class);
     private static FileDb fileDbInstance;
-    public final String filePath;
+    private String filePath;
 
     private FileDb(String filePath) {
         this.filePath = filePath;
@@ -27,6 +27,21 @@ public class FileDb {
             fileDbInstance = new FileDb(filePath);
         }
         return fileDbInstance;
+    }
+
+    public static List<User> initializeFile() {
+        List<User> users = new ArrayList<>();
+        for (int i = 1; i < 3; i++) {
+            String firstName = "UserName" + i;
+            String lastName = "UserSurname" + i;
+            users.add(new User(firstName, lastName));
+        }
+        LOG.info("File initialized.");
+        return users;
+    }
+
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
     }
 
     public List<User> readFile() {
@@ -67,16 +82,5 @@ public class FileDb {
         } else {
             LOG.info("File already exists.");
         }
-    }
-
-    public static List<User> initializeFile() {
-        List<User> users = new ArrayList<>();
-        for (int i = 1; i < 3; i++) {
-            String firstName = "UserName" + i;
-            String lastName = "UserSurname" + i;
-            users.add(new User(firstName, lastName));
-        }
-        LOG.info("File initialized.");
-        return users;
     }
 }

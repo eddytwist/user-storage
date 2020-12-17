@@ -1,9 +1,9 @@
 package com.innowise_group.api;
 
-import com.innowise_group.dao.exception.UserNotFoundException;
 import com.innowise_group.entity.Role;
 import com.innowise_group.entity.User;
-import com.innowise_group.service.CrudService;
+import com.innowise_group.service.Service;
+import com.innowise_group.service.exception.ServiceException;
 import com.innowise_group.util.validation.EmailValidation;
 import com.innowise_group.util.validation.PhoneNumberValidation;
 import org.slf4j.Logger;
@@ -16,12 +16,12 @@ import java.util.Set;
 
 public class UserApi {
     private static final Logger LOG = LoggerFactory.getLogger(UserApi.class);
-    private final CrudService<User> crudService;
+    private final Service<User> service;
     private final Scanner scanner;
     private boolean finished = false;
 
-    public UserApi(CrudService<User> crudService) {
-        this.crudService = crudService;
+    public UserApi(Service<User> service) {
+        this.service = service;
         this.scanner = new Scanner(System.in);
     }
 
@@ -85,7 +85,7 @@ public class UserApi {
     }
 
     public void showUserStorage() {
-        List<User> users = crudService.getAllUsers();
+        List<User> users = service.getAll();
         System.out.println("\nUsers storage:");
         for (User user : users) {
             System.out.println(user);
@@ -96,7 +96,7 @@ public class UserApi {
     public void showUserInfo(int id) {
         User user;
         try {
-            user = crudService.getUserById(id);
+            user = service.getById(id);
             if (user == null) {
                 System.out.println("\nUser not found. Please, try again.");
                 LOG.error("User wasn't found.");
@@ -104,7 +104,7 @@ public class UserApi {
                 System.out.println(user.getUserFields());
                 LOG.info("User info printed.");
             }
-        } catch (UserNotFoundException e) {
+        } catch (ServiceException e) {
             System.out.println("\nUser not found. Please, try again.");
             LOG.error("User wasn't found. Details: " + e);
         }
@@ -117,7 +117,7 @@ public class UserApi {
                 addEmail(),
                 addRoles(),
                 addPhoneNumbers());
-        if (crudService.createUser(user)) {
+        if (service.create(user)) {
             System.out.println("User successfully added.");
             LOG.info("User created.");
         } else {
@@ -128,10 +128,10 @@ public class UserApi {
 
     public void showUserDeleted(int id) {
         try {
-            crudService.deleteUser(id);
+            service.delete(id);
             System.out.println("\nUser successfully deleted.");
             LOG.info("User deleted.");
-        } catch (UserNotFoundException e) {
+        } catch (ServiceException e) {
             System.out.println("\nUser not found. Please, try again.");
             LOG.error("User deletion failed. Details: " + e);
         }
@@ -140,14 +140,14 @@ public class UserApi {
     public void showUserUpdated(int id) {
         User updatedUser;
         try {
-            updatedUser = updateUserFields(crudService.getUserById(id));
-            if (crudService.updateUser(updatedUser)) {
+            updatedUser = updateUserFields(service.getById(id));
+            if (service.update(updatedUser)) {
                 System.out.println("User successfully updated.");
                 LOG.info("User updated.");
             } else {
                 System.out.println("User update failed.");
             }
-        } catch (UserNotFoundException e) {
+        } catch (ServiceException e) {
             System.out.println("\nUser not found. Please, try again.");
             LOG.error("User update failed. Details: " + e);
         }
@@ -218,7 +218,7 @@ public class UserApi {
         System.out.print("Choose the role by number (1-6): ");
     }
 
-    public Role chooseRole(String roleNumber, Set<Role> roles){
+    public Role chooseRole(String roleNumber, Set<Role> roles) {
         int maxRolesSize = 3;
         Role role = null;
         switch (roleNumber) {

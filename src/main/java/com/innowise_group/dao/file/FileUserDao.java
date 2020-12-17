@@ -1,7 +1,7 @@
 package com.innowise_group.dao.file;
 
 import com.innowise_group.dao.UserDao;
-import com.innowise_group.dao.exception.UserNotFoundException;
+import com.innowise_group.dao.exception.DaoUserNotFoundException;
 import com.innowise_group.db.FileDb;
 import com.innowise_group.entity.User;
 import org.slf4j.Logger;
@@ -11,11 +11,11 @@ import java.util.List;
 
 public class FileUserDao implements UserDao<User> {
     private static final Logger LOG = LoggerFactory.getLogger(FileUserDao.class);
-    private static final String FILE_PATH = "test/test_storage/test_user_storage.txt";
-    public FileDb fileDb = FileDb.getInstance(FILE_PATH);
+    private final String filePath = "storage/user_storage.txt";
+    private final FileDb fileDb = FileDb.getInstance(filePath);
 
     @Override
-    public boolean createUser(User user) {
+    public boolean create(User user) {
         List<User> users = fileDb.readFile();
         user.setId(getLastId() + 1);
         users.add(user);
@@ -24,7 +24,7 @@ public class FileUserDao implements UserDao<User> {
     }
 
     @Override
-    public User getUserById(int id) throws UserNotFoundException {
+    public User getById(int id) throws DaoUserNotFoundException {
         List<User> users = fileDb.readFile();
         User user = null;
         for (User u : users) {
@@ -34,7 +34,7 @@ public class FileUserDao implements UserDao<User> {
         }
         if (user == null) {
             LOG.error("User wasn't found.");
-            throw new UserNotFoundException();
+            throw new DaoUserNotFoundException();
         } else {
             LOG.info("User successfully found. Details: " + user);
             return user;
@@ -42,12 +42,12 @@ public class FileUserDao implements UserDao<User> {
     }
 
     @Override
-    public List<User> getAllUsers() {
+    public List<User> getAll() {
         return fileDb.readFile();
     }
 
     @Override
-    public boolean updateUser(User user) {
+    public boolean update(User user) {
         List<User> users = fileDb.readFile();
         for (User u : users) {
             if (u.getId() == user.getId()) {
@@ -59,10 +59,10 @@ public class FileUserDao implements UserDao<User> {
     }
 
     @Override
-    public boolean deleteUser(int id) throws UserNotFoundException {
+    public boolean delete(int id) throws DaoUserNotFoundException {
         List<User> users = fileDb.readFile();
         User user;
-        user = getUserById(id);
+        user = getById(id);
         users.remove(user);
         LOG.info("User successfully deleted. Details: " + users);
         return fileDb.updateFile(users);

@@ -1,18 +1,18 @@
 package com.innowise_group.dao;
 
-import com.innowise_group.dao.exception.UserNotFoundException;
+import com.innowise_group.dao.exception.DaoException;
 
 import java.util.List;
 
 public interface UserDao<T> {
 
-    boolean createUser(T t);
+    boolean create(T t);
 
-    T getUserById(int id) throws UserNotFoundException;
+    T getById(int id) throws DaoException;
 
-    List<T> getAllUsers();
+    List<T> getAll();
 
-    boolean updateUser(T t);
+    boolean update(T t);
 
-    boolean deleteUser(int id) throws UserNotFoundException;
+    boolean delete(int id) throws DaoException;
 }
