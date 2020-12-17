@@ -1,4 +1,4 @@
-package com.innowise_group.util;
+package com.innowise_group.db;
 
 import com.innowise_group.entity.User;
 import org.slf4j.Logger;
@@ -13,29 +13,26 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FileUtil {
-    private static final Logger LOG = LoggerFactory.getLogger(FileUtil.class);
-    private static final String FILE_PATH = "storage/user_storage.txt";
+public class FileDb {
+    private static final Logger LOG = LoggerFactory.getLogger(FileDb.class);
+    private static FileDb fileDbInstance;
+    public final String filePath;
 
-    static {
-        File file = new File(FILE_PATH);
-        if (!file.exists()) {
-            try {
-                file.getParentFile().mkdirs();
-                file.createNewFile();
-                LOG.info("New file created.");
-                updateFile(initializeFile());
-            } catch (IOException e) {
-                LOG.error("File wasn't created. Details: " + e);
-            }
-        } else {
-            LOG.info("File already exists.");
-        }
+    private FileDb(String filePath) {
+        this.filePath = filePath;
     }
 
-    public static List<User> readFile() {
+    public static FileDb getInstance(String filePath) {
+        if (fileDbInstance == null) {
+            fileDbInstance = new FileDb(filePath);
+        }
+        return fileDbInstance;
+    }
+
+    public List<User> readFile() {
         List<User> users = null;
-        try (ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(FILE_PATH))) {
+        createFile();
+        try (ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(filePath))) {
             users = (List<User>) objectInputStream.readObject();
             LOG.info("Users list successfully found. Details: \n" + users);
         } catch (ClassNotFoundException | IOException e) {
@@ -44,14 +41,31 @@ public class FileUtil {
         return users;
     }
 
-    public static boolean updateFile(List<User> users) {
-        try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(FILE_PATH))) {
+    public boolean updateFile(List<User> users) {
+        createFile();
+        try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(filePath))) {
             objectOutputStream.writeObject(users);
             LOG.info("Users list successfully updated. Details: \n" + users);
             return true;
         } catch (IOException e) {
             LOG.error("File wasn't updated. Details: " + e);
             return false;
+        }
+    }
+
+    public void createFile() {
+        File file = new File(fileDbInstance.filePath);
+        if (!file.exists()) {
+            try {
+                file.getParentFile().mkdirs();
+                file.createNewFile();
+                LOG.info("New file created.");
+                fileDbInstance.updateFile(initializeFile());
+            } catch (IOException e) {
+                LOG.error("File wasn't created. Details: " + e);
+            }
+        } else {
+            LOG.info("File already exists.");
         }
     }
 
