@@ -97,9 +97,14 @@ public class UserApi {
         User user;
         try {
             user = crudService.getUserById(id);
-            System.out.println(user.getUserFields());
-            LOG.info("User info printed.");
-        } catch (UserNotFoundException | NullPointerException e) {
+            if (user == null) {
+                System.out.println("\nUser not found. Please, try again.");
+                LOG.error("User wasn't found.");
+            } else {
+                System.out.println(user.getUserFields());
+                LOG.info("User info printed.");
+            }
+        } catch (UserNotFoundException e) {
             System.out.println("\nUser not found. Please, try again.");
             LOG.error("User wasn't found. Details: " + e);
         }
@@ -126,7 +131,7 @@ public class UserApi {
             crudService.deleteUser(id);
             System.out.println("\nUser successfully deleted.");
             LOG.info("User deleted.");
-        } catch (UserNotFoundException | NullPointerException e) {
+        } catch (UserNotFoundException e) {
             System.out.println("\nUser not found. Please, try again.");
             LOG.error("User deletion failed. Details: " + e);
         }
@@ -142,7 +147,7 @@ public class UserApi {
             } else {
                 System.out.println("User update failed.");
             }
-        } catch (UserNotFoundException | NullPointerException e) {
+        } catch (UserNotFoundException e) {
             System.out.println("\nUser not found. Please, try again.");
             LOG.error("User update failed. Details: " + e);
         }
