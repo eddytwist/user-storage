@@ -4,7 +4,7 @@ Console application with quite simple interface that allows you create, read, up
 ## Technology stack:
 - Maven
 - Log4j
-- JUnit4
+- JUnit
 ## Demo:
 ![Demo User Storage](https://raw.githubusercontent.com/eddytwist/some-files/main/user-storage-demo.gif)
 
