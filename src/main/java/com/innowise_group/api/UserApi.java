@@ -27,6 +27,8 @@ public class UserApi {
 
     public void start() {
         LOG.info("THE PROGRAM IS RUNNING.\n");
+        System.out.println("\nUser Storage Application");
+        System.out.print("-------------------------");
         while (!finished) {
             showMainMenu();
         }
@@ -39,9 +41,7 @@ public class UserApi {
     }
 
     public void showMainMenu() {
-        System.out.println("\nUser Storage Application");
-        System.out.println("-------------------------");
-        System.out.println("Main menu:");
+        System.out.println("\nMain menu:");
         System.out.println("1. Create new user");
         System.out.println("2. Update existing user");
         System.out.println("3. Get user information");
@@ -319,27 +319,27 @@ public class UserApi {
     }
 
     public User updateUserFields(User user) {
-        User userCopy = new User(user);
+        User userClone = user.clone();
         boolean finished = false;
         while (!finished) {
-            System.out.print("\nChose the field you want to update by number (1-5)." + userCopy.getUserFields()
+            System.out.print("\nChose the field you want to update by number (1-5)." + userClone.getUserFields()
                     + "\n6. Finish update.\nEnter the number: ");
             String fieldNumber = scanner.nextLine();
             switch (fieldNumber) {
                 case "1":
-                    userCopy.setFirstName(addFirstName());
+                    userClone.setFirstName(addFirstName());
                     break;
                 case "2":
-                    userCopy.setLastName(addLastName());
+                    userClone.setLastName(addLastName());
                     break;
                 case "3":
-                    userCopy.setEmail(addEmail());
+                    userClone.setEmail(addEmail());
                     break;
                 case "4":
-                    userCopy.setRoles(addRoles());
+                    userClone.setRoles(addRoles());
                     break;
                 case "5":
-                    userCopy.setPhoneNumbers(addPhoneNumbers());
+                    userClone.setPhoneNumbers(addPhoneNumbers());
                     break;
                 case "6":
                     finished = true;
@@ -348,8 +348,8 @@ public class UserApi {
                     System.out.println("\nWrong number. Please, try again.");
             }
         }
-        LOG.info("User successfully updated. Details: " + userCopy);
-        return userCopy;
+        LOG.info("User successfully updated. Details: " + userClone);
+        return userClone;
     }
 
 }

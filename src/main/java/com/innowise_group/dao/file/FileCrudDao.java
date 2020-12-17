@@ -1,6 +1,6 @@
 package com.innowise_group.dao.file;
 
-import com.innowise_group.dao.UserDao;
+import com.innowise_group.dao.CrudDao;
 import com.innowise_group.dao.exception.DaoUserNotFoundException;
 import com.innowise_group.db.FileDb;
 import com.innowise_group.entity.User;
@@ -9,8 +9,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-public class FileUserDao implements UserDao<User> {
-    private static final Logger LOG = LoggerFactory.getLogger(FileUserDao.class);
+public class FileCrudDao implements CrudDao<User> {
+    private static final Logger LOG = LoggerFactory.getLogger(FileCrudDao.class);
     private final String filePath = "storage/user_storage.txt";
     private final FileDb fileDb = FileDb.getInstance(filePath);
 

@@ -34,13 +34,15 @@ public class User implements Serializable {
         this.phoneNumbers = new HashSet<>();
     }
 
-    public User(User user) {
-        this.id = user.id;
-        this.firstName = user.firstName;
-        this.lastName = user.lastName;
-        this.email = user.email;
-        this.roles = user.roles;
-        this.phoneNumbers = user.phoneNumbers;
+    public User clone() {
+        User userClone = new User(
+                this.firstName,
+                this.lastName,
+                this.email,
+                this.roles,
+                this.phoneNumbers);
+        userClone.setId(this.id);
+        return userClone;
     }
 
     public int getId() {

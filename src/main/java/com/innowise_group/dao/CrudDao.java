@@ -4,7 +4,7 @@ import com.innowise_group.dao.exception.DaoException;
 
 import java.util.List;
 
-public interface UserDao<T> {
+public interface CrudDao<T> {
 
     boolean create(T t);
 
