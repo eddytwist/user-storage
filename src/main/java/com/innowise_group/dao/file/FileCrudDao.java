@@ -70,6 +70,12 @@ public class FileCrudDao implements CrudDao<User> {
 
     public int getLastId() {
         List<User> users = fileDb.readFile();
-        return users.get(users.size() - 1).getId();
+        int lastId;
+        if (users.size() == 0) {
+            lastId = 0;
+        } else {
+            lastId = users.get(users.size() - 1).getId();
+        }
+        return lastId;
     }
 }
