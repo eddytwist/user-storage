@@ -1,5 +1,5 @@
-# User Storage
-Console application with quite simple interface that allows you create, read, update and delete Users in file.
+# User Administration Tool
+User storage application with console interface that allows you create, read, update and delete Users in file.
 
 ## Technology stack:
 - Maven
